@@ -1,8 +1,8 @@
 from src.data.preprocessing import UniVariatePreprocessor, MultiVariatePreprocessor
 import os
 
-DATA_DIRECTORY = "../../TSB/raw/"
-OUTPUT_DIRECTORY = "../../TSB/processed/"
+DATA_DIRECTORY = "TSB/raw/"
+OUTPUT_DIRECTORY = "TSB/processed/"
 
 def is_preprocessing_done(dir1: str, dir2: str):
     if not os.path.exists(dir1) or not os.path.exists(dir2):
