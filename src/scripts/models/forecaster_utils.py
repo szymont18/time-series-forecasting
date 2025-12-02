@@ -7,16 +7,23 @@ class ModelName(Enum):
     DLINEAR = "DLinear"
     CATS = "CATS"
     PATCHTST = "PATCHTST"
+    CHRONOS = "CHRONOS"
 
 
 MODEL_IMPORT_MAP = {
     ModelName.DLINEAR: ("sktime.forecasting.ltsf", "LTSFDLinearForecaster"),
     ModelName.CATS: ("src.scripts.models.ltsf_cats_forecaster", "LTSFCatsForecaster"),
-    ModelName.PATCHTST: ("sktime.forecasting.patch_tst", "PatchTSTForecaster")
+    ModelName.PATCHTST: ("sktime.forecasting.patch_tst", "PatchTSTForecaster"),
+    ModelName.CHRONOS: ("sktime.forecasting.chronos", "ChronosForecaster")
 }
 
 DEFAULT_PARAMS = {
-    ModelName.DLINEAR: {},
+    ModelName.DLINEAR: {"seq_len": 96,
+                        "pred_len": 24,
+                        "individual": False,
+                        "batch_size": 32,
+                        "num_epochs": 100,
+                        "lr": 0.01},
     ModelName.CATS: {"seq_len": 96,
                      "pred_len": 24,
                      "batch_size": 32,
@@ -48,6 +55,16 @@ DEFAULT_PARAMS = {
             "learning_rate": 1e-4,
             "num_train_epochs": 2000,
             "per_device_train_batch_size": 16,
+        }
+    },
+
+    ModelName.CHRONOS: {
+        "model_path": "amazon/chronos-t5-small",
+        "config": {
+            "num_samples": 128,
+            "temperature": 0.3,
+            "top_k": 100,
+            "top_p": 0.2
         }
     }
 }
