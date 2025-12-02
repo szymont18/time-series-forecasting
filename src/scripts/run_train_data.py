@@ -1,13 +1,14 @@
 import matplotlib
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import torch
+import torch.nn as nn
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
-import torch
+from sktime.forecasting.ltsf import LTSFDLinearForecaster
+from sktime.performance_metrics.forecasting import MeanAbsoluteScaledError, MeanAbsoluteError
+from sktime.utils.plotting import plot_series
 from torch.utils.data import TensorDataset, DataLoader
-from src.scripts.models import DLinear
-import torch.nn as nn
 
 matplotlib.use('TkAgg')
 
@@ -17,14 +18,13 @@ BATCH_SIZE = 32
 TRAIN_RATIO = 0.8
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
+import pandas as pd
 
 
 def load_data_from_file(file_path):
-    """Wczytuje dane i zwraca serię czasową jako NumPy array (wartości)."""
-    df = pd.read_csv(file_path, parse_dates=['Data'])
-    data = df["Data"].values.reshape(-1, 1)
-    return data
+    df = pd.read_csv(file_path)
+    series = pd.Series(df["Data"].values)
+    return series
 
 
 def calculate_metrics(actuals_final, predictions_final):
@@ -148,32 +148,8 @@ class UniversalForecaster:
         train_dataset = TensorDataset(self.X_train_t, Y_train_t)
         self.train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
 
-    def train(self, num_epochs: int = 10, learning_rate: float = 0.001):
-        """Trenuje przekazany model."""
-
-        criterion = nn.MSELoss()
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=learning_rate)
-
-        print("Początek treningu")
-        for epoch in range(num_epochs):
-            self.model.train()
-            total_loss = 0
-
-            for batch_x, batch_y in self.train_loader:
-                batch_x = batch_x.to(self.device)
-                batch_y = batch_y.to(self.device)
-
-                optimizer.zero_grad()
-                output = self.model(batch_x)
-                loss = criterion(output, batch_y)
-                loss.backward()
-                optimizer.step()
-
-                total_loss += loss.item()
-
-            avg_loss = total_loss / len(self.train_loader)
-            print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {avg_loss:.6f}")
-        print("Trening zakończony!")
+    def fit(self, X):
+        self.model.fit(X)
 
     def evaluate(self):
         """Generuje prognozy na zbiorze testowym i odwraca skalowanie."""
@@ -194,40 +170,46 @@ class UniversalForecaster:
         return actuals_final, predictions_final
 
 
-
 if __name__ == '__main__':
     file_path = "TSB/processed/TSB-U/149_Stock_id_1_Finance_tr_500_1st_7.csv"
-    raw_data = load_data_from_file(file_path)
+    raw_data = pd.Series(pd.read_csv(file_path)["Data"].values[:1000])
 
-    dlinear_model = DLinear(
-        seq_len=SEQ_LEN,
-        pred_len=PRED_LEN,
-        individual=False,
-        num_features=1
+    SEQ_LEN = 2
+    PRED_LEN = 1
+
+    train_size = int(0.8 * len(raw_data))
+    train_data = raw_data[:train_size]
+    test_data = raw_data[train_size:]
+
+    fh = list(range(1, len(test_data) + 1))
+
+    dlinear_config = {
+        "seq_len": 96,
+        "pred_len": PRED_LEN,
+        "individual": False
+    }
+
+    training_config = {
+        "batch_size": 32,
+        "num_epochs": 2,
+        "lr": 0.01
+    }
+
+    dlinear_model = LTSFDLinearForecaster(
+        **dlinear_config,
+        **training_config
     )
 
-    forecaster = UniversalForecaster(
-        model=dlinear_model,
-        data=raw_data,
-        seq_len=SEQ_LEN,
-        pred_len=PRED_LEN,
-        batch_size=BATCH_SIZE,
-        train_ratio=TRAIN_RATIO
-    )
+    dlinear_model.fit(y=train_data, fh=fh)
 
-    forecaster.train(num_epochs=10, learning_rate=0.001)
+    y_pred = dlinear_model.predict(fh=fh)
 
-    actuals_final, predictions_final = forecaster.evaluate()
+    mae = MeanAbsoluteError()(test_data, y_pred)
+    mase = MeanAbsoluteScaledError()(test_data, y_pred, y_train=train_data)
+    print(f"MAE: {mae:.4f}")
+    print(f"MASE: {mase:.4f}")
 
-    calculate_metrics(actuals_final, predictions_final)
-
-    plot_single_forecast_window(
-        forecaster.X_train_t,
-        actuals_final,
-        predictions_final,
-        SEQ_LEN,
-        PRED_LEN,
-        forecaster.scaler
-    )
-
-    #plot_data_series(actuals_final, predictions_final)
+    plot_series(raw_data, y_pred, labels=["True", "Predicted"])
+    plt.title("DLinear Forecast Evaluation")
+    plt.show()
+    plt.clf()
