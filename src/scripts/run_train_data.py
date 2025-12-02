@@ -94,7 +94,6 @@ class UniversalForecaster:
     Uniwersalna klasa do trenowania i ewaluacji modeli prognozowania szeregów czasowych PyTorch.
     Akceptuje dowolny model dziedziczący po nn.Module w konstruktorze.
     """
-
     def __init__(self, model: nn.Module, data: np.ndarray, seq_len: int, pred_len: int, batch_size: int,
                  train_ratio: float):
 
