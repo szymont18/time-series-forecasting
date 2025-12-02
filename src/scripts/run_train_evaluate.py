@@ -2,8 +2,9 @@ from matplotlib import pyplot as plt
 from sktime.performance_metrics.forecasting import MeanAbsoluteError, MeanAbsoluteScaledError
 from sktime.utils import plot_series
 
-from .forecasting_utils import load_data_from_file
-from .models.forecaster_utils import create_model_instance, ModelName
+from src.scripts.forecasting_utils import load_data_from_file
+from src.scripts.models.forecaster_utils import create_model_instance, ModelName
+
 
 if __name__ == '__main__':
     file_path = "TSB/processed/TSB-U/149_Stock_id_1_Finance_tr_500_1st_7.csv"
@@ -15,25 +16,7 @@ if __name__ == '__main__':
 
     fh = list(range(1, len(test_data) + 1))
 
-    config = {
-        "seq_len": 96,
-        "pred_len": 24,
-        "batch_size": 32,
-        "num_epochs": 400,
-        "lr": 0.0001,
-        "num_features": 1,
-        "d_model": 128,
-        "n_layers": 3,
-        "n_heads": 8,
-        "patch_len": 24,
-        "stride": 24,
-        "dropout": 0.1,
-        "d_ff": 256,
-        "activation": "gelu",
-        "padding_patch": "end"
-    }
-
-    cats_model = create_model_instance(model_name=ModelName.CATS, config_params=config)
+    cats_model = create_model_instance(model_name=ModelName.PATCHTST)
 
     cats_model.fit(y=train_data, fh=fh)
 
