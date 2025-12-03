@@ -132,7 +132,6 @@ def evaluate_models(file_path: str, model_paths=None, max_points: int = 1000, ou
 if __name__ == '__main__':
     file_path = "TSB/processed/TSB-U/149_Stock_id_1_Finance_tr_500_1st_7.csv"
     
-    # # Step 1: Train models (only if not already trained)
-    # train_models(file_path=file_path, max_points=1000)
+    train_models(file_path=file_path, max_points=1000)
 
     evaluate_models(file_path=file_path, max_points=1000, out_dir="plots")
