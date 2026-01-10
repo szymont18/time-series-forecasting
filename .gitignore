@@ -210,3 +210,7 @@ __marimo__/
 
 TSB/processed/
 TSB/raw/
+
+trained_models
+trainer_output
+plots
