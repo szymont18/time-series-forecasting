@@ -7,7 +7,7 @@ from sktime.utils import plot_series
 from sktime.split import temporal_train_test_split
 
 from src.scripts.forecasting_utils import load_data_from_file
-from src.scripts.models.forecaster_utils import create_model_instance, ModelName, DEFAULT_PARAMS
+from src.scripts.models.forecaster_utils import ModelName, DEFAULT_PARAMS, create_model_instance
 
 TRAINED_MODELS_DIR = "trained_models/"
 os.makedirs(TRAINED_MODELS_DIR, exist_ok=True)

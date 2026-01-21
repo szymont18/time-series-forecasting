@@ -1,0 +1,12 @@
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+DATA: Finance-U | MODEL: PATCHTST | HORIZON: 167
+BEST PARAMS: {'config': {'context_length': 96, 'patch_length': 24, 'patch_stride': 24, 'prediction_length': 167, 'num_attention_heads': 4, 'num_hidden_layers': 3, 'd_model': 64, 'head_dropout': 0.028825804968038063}, 'training_args': {'num_train_epochs': 20, 'per_device_train_batch_size': 8, 'output_dir': 'test_output_optuna', 'overwrite_output_dir': True, 'save_strategy': 'no', 'logging_strategy': 'no', 'learning_rate': 0.00028178049623064585}}
+-------------------------------------------------------------------------------------
+| Series       |        MAE |        MSE |     MAPE |     MASE
+-------------------------------------------------------------------------------------
+| Data         |     3.4727 |    21.2530 |     3.2% |   1.0600
+-------------------------------------------------------------------------------------
+| AVERAGE      |     3.4727 |    21.2530 |     3.2% |   1.0600
+| TOTAL SUM    |     3.4727 |    21.2530 |     3.2% |   1.0600
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

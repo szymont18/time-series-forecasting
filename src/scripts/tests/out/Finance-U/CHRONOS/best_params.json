@@ -1,0 +1,9 @@
+{
+    "model_path": "amazon/chronos-t5-small",
+    "config": {
+        "num_samples": 20,
+        "temperature": 0.3101515133611832,
+        "top_k": 40,
+        "top_p": 0.9107518238598584
+    }
+}

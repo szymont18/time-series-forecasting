@@ -1,0 +1,12 @@
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+DATA: WebService-U | MODEL: PATCHTST | HORIZON: 152
+BEST PARAMS: {'config': {'context_length': 192, 'patch_length': 24, 'patch_stride': 24, 'prediction_length': 152, 'num_attention_heads': 4, 'num_hidden_layers': 2, 'd_model': 128, 'head_dropout': 0.1524870540205104}, 'training_args': {'num_train_epochs': 20, 'per_device_train_batch_size': 8, 'output_dir': 'test_output_optuna', 'overwrite_output_dir': True, 'save_strategy': 'no', 'logging_strategy': 'no', 'learning_rate': 0.00018630449227227013}}
+-------------------------------------------------------------------------------------
+| Series       |        MAE |        MSE |     MAPE |     MASE
+-------------------------------------------------------------------------------------
+| Data         |     5.1764 |    46.8608 |    17.2% |   3.1216
+-------------------------------------------------------------------------------------
+| AVERAGE      |     5.1764 |    46.8608 |    17.2% |   3.1216
+| TOTAL SUM    |     5.1764 |    46.8608 |    17.2% |   3.1216
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -182,3 +182,13 @@ def create_evaluation(model_name: ModelName, raw_data: pd.DataFrame, config_para
     train_data, test_data = get_train_test(model_name, raw_data)
 
     return forecaster_instance, train_data, test_data
+
+def create_model_instance(model_name: ModelName, config_params: Dict[str, Any] = None) -> BaseForecaster:
+    ForecasterClass = get_forecaster_class(model_name)
+
+    if config_params is None:
+        config_params = DEFAULT_PARAMS[model_name]
+
+    forecaster_instance = ForecasterClass(**config_params)
+
+    return forecaster_instance
