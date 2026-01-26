@@ -64,13 +64,18 @@ def load_and_split(config):
         data = preprocess_func(data)
 
     if config["type"] == "U":
-        MAX_HISTORY_LIMIT = 1500
+        MAX_HISTORY_LIMIT = 1100
     else:
-        MAX_HISTORY_LIMIT = 900
+        MAX_HISTORY_LIMIT = 650
 
     if len(data) > MAX_HISTORY_LIMIT:
         print(f"[INFO] Dataset too large ({len(data)}). Truncating to last {MAX_HISTORY_LIMIT} points.")
         data = data.iloc[-MAX_HISTORY_LIMIT:]
+    else:
+        MAX_HISTORY_LIMIT = int(len(data) * 0.8)
+        print(f"[INFO] Dataset within limits ({len(data)}). Reducing to 80%: {MAX_HISTORY_LIMIT} points.")
+        data = data.iloc[-MAX_HISTORY_LIMIT:]
+    # ----------------------------------------
 
     y_train_full, y_test = temporal_train_test_split(data, test_size=0.2)
 
