@@ -1,0 +1,11 @@
+{
+    "input_size": 48,
+    "n_head": 2,
+    "batch_size": 2,
+    "max_steps": 40,
+    "hidden_size": 32,
+    "dropout": 0.13685363782398285,
+    "learning_rate": 0.00029930575142846804,
+    "h": 180,
+    "n_series": 2
+}

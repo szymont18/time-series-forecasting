@@ -1,0 +1,21 @@
+{
+    "config": {
+        "context_length": 512,
+        "patch_length": 24,
+        "patch_stride": 24,
+        "prediction_length": 300,
+        "num_attention_heads": 4,
+        "num_hidden_layers": 2,
+        "d_model": 128,
+        "head_dropout": 0.05546081470449935
+    },
+    "training_args": {
+        "num_train_epochs": 20,
+        "per_device_train_batch_size": 8,
+        "output_dir": "test_output_optuna",
+        "overwrite_output_dir": true,
+        "save_strategy": "no",
+        "logging_strategy": "no",
+        "learning_rate": 0.00038847568847012883
+    }
+}

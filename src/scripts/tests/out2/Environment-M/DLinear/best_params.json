@@ -1,0 +1,8 @@
+{
+    "pred_len": 67,
+    "seq_len": 96,
+    "num_epochs": 40,
+    "batch_size": 32,
+    "individual": false,
+    "lr": 0.009192852844112788
+}

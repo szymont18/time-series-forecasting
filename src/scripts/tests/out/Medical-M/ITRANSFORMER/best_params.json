@@ -1,0 +1,13 @@
+{
+    "input_size": 192,
+    "n_heads": 2,
+    "factor": 1,
+    "max_steps": 40,
+    "scaler_type": "standard",
+    "n_series": 2,
+    "batch_size": 8,
+    "hidden_size": 128,
+    "d_layers": 1,
+    "learning_rate": 0.00039819101712080244,
+    "h": 180
+}
