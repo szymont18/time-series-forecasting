@@ -1,0 +1,15 @@
+{
+    "pred_len": 134,
+    "seq_len": 96,
+    "stride": 24,
+    "padding_patch": "end",
+    "num_epochs": 30,
+    "batch_size": 8,
+    "patch_len": 24,
+    "n_layers": 2,
+    "d_model": 128,
+    "d_ff": 128,
+    "dropout": 0.07966126619696977,
+    "lr": 0.0003852549399856645,
+    "verbose": true
+}

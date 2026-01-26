@@ -27,7 +27,7 @@ DATASETS = [
         "path": "resources/data/TSB/processed/TSB-U/149_Stock_id_1_Finance_tr_500_1st_7.csv",
         "preprocess": preprocess_daily,
         "type": "U",
-        "skip": True
+        "skip": False
     },
     {
         "name": "WebService-U",
@@ -35,7 +35,7 @@ DATASETS = [
         "path": "resources/data/TSB/processed/TSB-U/079_WSD_id_51_WebService_tr_4559_1st_10672.csv",
         "preprocess": preprocess_daily,
         "type": "U",
-        "skip": True
+        "skip": False
     },
     {
         "name": "Facility-U",
@@ -43,7 +43,7 @@ DATASETS = [
         "path": "resources/data/TSB/processed/TSB-U/817_Exathlon_id_8_Facility_tr_10766_1st_12590.csv",
         "preprocess": preprocess_daily,
         "type": "U",
-        "skip": True
+        "skip": False
     },
     {
         "name": "Facility-M",

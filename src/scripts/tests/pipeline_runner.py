@@ -22,7 +22,7 @@ from .tuning_config import MODELS_CONFIG, MODEL_SUGGEST_MAP
 from .dataset_config import DATASETS
 from .data_loader import load_and_split
 
-OUT_DIR = "src/scripts/tests/out"
+OUT_DIR = "src/scripts/tests/out2"
 warnings.filterwarnings("ignore")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -116,9 +116,16 @@ def calculate_metrics_dict(y_true, y_pred, y_train):
         "average": avg_dict
     }
 
-def generate_result_string(dataset_label, model_name, horizon, metrics_data, best_params=None):
-    lines = [f"\n{'>' * 85}", f"DATA: {dataset_label} | MODEL: {model_name} | HORIZON: {horizon}"]
-    if best_params: lines.append(f"BEST PARAMS: {best_params}")
+
+def generate_result_string(dataset_label, model_name, horizon, metrics_data, best_params=None, dataset_size=None):
+    size_info = f" (N={dataset_size})" if dataset_size else ""
+    lines = [
+        f"\n{'>' * 85}",
+        f"DATA: {dataset_label}{size_info} | MODEL: {model_name} | HORIZON: {horizon}"
+    ]
+    if best_params:
+        lines.append(f"BEST PARAMS: {best_params}")
+
     lines.append("-" * 85)
     lines.append(f"| {'Series':<12} | {'MAE':>10} | {'MSE':>10} | {'MAPE':>8} | {'MASE':>8}")
     lines.append("-" * 85)
@@ -260,7 +267,7 @@ def run_tuning_pipeline():
                 y_pred.index = y_test_sliced.index
 
                 metrics = calculate_metrics_dict(y_test_sliced, y_pred, y_train_full)
-                res_str = generate_result_string(ds_conf["name"], m_name, current_horizon, metrics, best_params)
+                res_str = generate_result_string(ds_conf["name"], m_name, current_horizon, metrics, best_params, dataset_size=len(data))
 
                 with open(os.path.join(m_dir, "best_params.json"), "w") as f:
                     json.dump(best_params, f, indent=4, default=str)

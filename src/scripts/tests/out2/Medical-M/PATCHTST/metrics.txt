@@ -1,0 +1,13 @@
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+DATA: Medical-M (N=650) | MODEL: PATCHTST | HORIZON: 130
+BEST PARAMS: {'config': {'context_length': 96, 'patch_length': 24, 'patch_stride': 24, 'prediction_length': 130, 'num_attention_heads': 4, 'num_hidden_layers': 2, 'd_model': 128, 'head_dropout': 0.005043610946129329}, 'training_args': {'num_train_epochs': 25, 'per_device_train_batch_size': 8, 'output_dir': 'test_output_optuna', 'overwrite_output_dir': True, 'save_strategy': 'no', 'logging_strategy': 'no', 'learning_rate': 0.00013874081151861868}}
+-------------------------------------------------------------------------------------
+| Series       |        MAE |        MSE |     MAPE |     MASE
+-------------------------------------------------------------------------------------
+| MLII         |     0.2926 |     0.1824 |    30.3% |   1.0919
+| V1           |     0.1505 |     0.0345 |    23.6% |   2.2022
+-------------------------------------------------------------------------------------
+| AVERAGE      |     0.2215 |     0.1085 |    26.9% |   1.6470
+| TOTAL SUM    |     0.4050 |     0.2886 |    53.5% |   1.2900
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
