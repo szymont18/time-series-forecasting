@@ -3,7 +3,7 @@
 ## 1. Wstęp
 W prognozowaniu szeregów czasowych coraz częściej stosuje się modele oparte na mechanizmie attention, w szczególności architektury Transformer. Jednocześnie wyniki ostatnich prac pokazują, że proste modele liniowe mogą osiągać porównywalne lub lepsze rezultaty niż modele wykorzystujące self-attention.
 
-Problemem badawczym jest ocena, czy mechanizm attention rzeczywiście poprawia jakość prognoz w długoterminowym prognozowaniu szeregów czasowych, czy też jego rola jest drugorzędna względem innych elementów architektury. W ramach zadania porównano modele z self-attention, modele bez attention oraz architekturę opartą wyłącznie na cross-attention, analizując ich skuteczność w jednolitym protokole eksperymentalnym.
+Problemem badawczym jest ocena, czy mechanizm attention rzeczywiście poprawia jakość prognoz w długoterminowym prognozowaniu szeregów czasowych, czy też jego rola jest drugorzędna względem innych elementów architektury. W ramach zadania porównano modele z self-attention, modele bez attention oraz architekturę opartą wyłącznie na cross-attention, analizując ich skuteczność w eksperymentach.
 
 ## 2. Opis testowanych modeli
 
@@ -336,7 +336,7 @@ Z kolei zaawansowane transformery o wysokiej złożoności, takie jak **Autoform
 
 ### WebService-U (N=608), Horizon=122
 
-| Model                      | MAE     | MSE      | MAPE | MASE   |
+| Model                      | MAE     | MSE     | MAPE | MASE   |
 |---------------------------|---------|----------|------|--------|
 | CATS                      | 11.5761 | 169.8835 | 37.5%| 6.8239 |
 | DLinear                   | 8.8727  | 94.3758  | 30.1%| 5.2303 |
@@ -347,19 +347,79 @@ Z kolei zaawansowane transformery o wysokiej złożoności, takie jak **Autoform
 | AutoARIMA                 | 7.1367  | 73.9912  | 29.9%| 4.2070 |
 | Chronos                   | 4.5630  | 30.4379  | 16.3%| 2.6898 |
 
+### Ogólne średnie miejsce dla każdego modelu pod względem MSE
 
-### 5.2 Attention vs brak attention
-- Porównanie:
-  - DLinear vs PatchTST
-  - PatchTST vs CATS
-- Wpływ usunięcia self-attention na jakość prognozy
+| Model                     | Średnie miejsce |
+| ------------------------- | --------------- |
+| PatchTST                  | 2.43            |
+| iTransformer              | 3.39            |
+| AutoARIMA                 | 4.14            |
+| CATS                      | 4.54            |
+| DLinear                   | 4.71            |
+| Autoformer                | 4.71            |
+| TemporalFusionTransformer | 5.43            |
+| Chronos                   | 6.64            |
+
+### Średnie miejsce dla najkrótszych horyzontów pod względem MSE
+
+| Model                     | Średnie miejsce  |
+|---------------------------|------|
+| PatchTST                  | 2.08 |
+| iTransformer              | 3.17 |
+| AutoARIMA                 | 3.83 |
+| Autoformer                | 4.67 |
+| DLinear                   | 5.08 |
+| CATS                      | 5.33 |
+| TemporalFusionTransformer | 5.33 |
+| Chronos                   | 6.50 |
+
+
+### Średnie miejsce dla nadłuższych horyzontów pod względem MSE
+
+| Model                     | Średnie miejsce |
+|---------------------------|------------------------------------------|
+| PatchTST                  | 2.75 |
+| iTransformer              | 3.58 |
+| CATS                      | 4.08 |
+| DLinear                   | 4.42 |
+| Autoformer                | 4.50 |
+| AutoARIMA                 | 4.50 |
+| TemporalFusionTransformer | 5.83 |
+| Chronos                   | 6.33 |
+
+
 
 ## 6. Dyskusja wyników
-- Czy attention poprawia jakość prognoz?
-- Czy proste modele liniowe są konkurencyjne?
-- Jak zachowują się modele dla długiego horyzontu?
 
-## 7. Wnioski
-- Najważniejsze obserwacje z eksperymentów
-- Odpowiedź na pytanie z tematu zadania
-- Krótkie podsumowanie
+### 6.1 DLinear vs PatchTST
+
+Wyniki pokazują, że PatchTST (self-attention) jest zwykle mocniejszym modelem niż DLinear (liniowy, bez attention), szczególnie w bardziej złożonych domenach, gdzie potrzebne jest uchwycenie nieliniowych zależności i relacji w dłuższym kontekście. Widać to m.in. w Medical-M i WebService-U (N=608), gdzie PatchTST znacząco redukuje MSE względem DLinear. Jednocześnie DLinear potrafi być konkurencyjny, a nawet lepszy w wybranych ustawieniach (np. Environment-M, Horizon=84 oraz Facility-M, Horizon=160), co sugeruje, że dla części serii kluczowe wzorce dają się dobrze opisać prostą dekompozycją trend/sezon i projekcją liniową. W praktyce oznacza to, że self-attention w PatchTST często daje przewagę, ale nie koniecznie zawsze musi być lepszy. Przy prostszej dynamice  model liniowy może okazać się równie dobry lub nawet lepszy.
+
+
+### 6.2 PatchTST vs CATS
+
+Porównanie PatchTST (self-attention) z CATS (cross-attention-only) wskazuje, że samo usunięcie self-attention nie powoduje jednoznacznego zmniejszenia jakości, ale zwiększa zależność wyniku od domeny. CATS potrafi wygrywać w kilku zadaniach (np. Environment-M, Horizon=84, Facility-M (N=650), Horizon=130, oraz WebService-U, Horizon=152), co sugeruje, że mechanizm “zapytania horyzontowego” dopasowywanego do historii bywa wystarczający do wydobycia właściwych fragmentów kontekstu bez pełnej interakcji token–token w historii. Z drugiej strony są domeny, gdzie PatchTST jest wyraźnie stabilniejszy i znacznie lepszy (np. WebService-U (N=608), Horizon=122, gdzie CATS ma bardzo wysokie MSE), co wskazuje, że w niektórych typach danych brak self-attention ogranicza zdolność modelu do budowania bogatej reprezentacji historii, a cross-attention nie zawsze kompensuje tę stratę.
+
+
+### 6.4 Modele liniowe (AutoARIMA i DLinear)
+
+Modele liniowe AutoARIMA i DLinear okazały się zaskakująco konkurencyjne wobec znacznie bardziej złożonych architektur opartych na attention, potwierdzając, że wysoka złożoność modelu nie jest warunkiem dobrej jakości prognozy w zadaniach długoterminowych. AutoARIMA najlepiej sprawdzała się w szeregach jednowymiarowych o regularnej, trendowo-sezonowej strukturze, gdzie klasyczne modelowanie zależności autoregresyjnych zapewniało stabilne i odporne na kumulację błędu prognozy. DLinear natomiast wyróżniał się większą uniwersalnością – dzięki jawnej dekompozycji sygnału i bezpośredniemu prognozowaniu wielokrokowemu był stabilny w uczeniu i często dorównywał modelom attention, a w części przypadków je przewyższał. Łącznie wyniki te wskazują, że modele liniowe stanowią silny i trudny do zignorowania punkt odniesienia, szczególnie w warunkach ograniczonych zasobów obliczeniowych oraz gdy dynamika danych nie wymaga modelowania złożonych nieliniowych interakcji.
+
+### 6.5 Chronos i Temporal Fusion Transformer
+
+Modele Chronos i Temporal Fusion Transformer w przeprowadzonych eksperymentach wypadły najsłabiej w ujęciu przekrojowym, co było widoczne zarówno w rankingach opartych na MSE, jak i w wysokiej zmienności ich wyników między domenami. W przypadku Chronos kluczowym ograniczeniem była jego natura modelu zero-shot – brak dostrajania do konkretnego zbioru danych sprawiał, że mimo dobrej zdolności do uchwycenia ogólnych wzorców, model często nie potrafił dopasować się do specyficznej skali, dynamiki i reżimów poszczególnych szeregów. W efekcie jego prognozy były relatywnie stabilne, ale mało precyzyjne w porównaniu do modeli trenowanych bezpośrednio na danych zadaniowych.
+
+Temporal Fusion Transformer natomiast okazał się szczególnie wrażliwy na ograniczenia sprzętowe i proces optymalizacji. Złożona architektura, łącząca komponenty sekwencyjne, mechanizmy selekcji zmiennych i attention, wymaga dużych paczek danych oraz długiego, stabilnego treningu, aby ujawnić swój potencjał. W warunkach ograniczonej pamięci i konieczności stosowania bardzo małych batchy, proces uczenia był silnie zaszumiony, co utrudniało zbieżność i prowadziło do niedouczenia modelu. W rezultacie zarówno Chronos, jak i TFT nie wykorzystały swoich teoretycznych zalet, a ich słabsze wyniki można interpretować nie jako porażkę samej idei attention, lecz jako efekt niedopasowania architektury do reżimu danych, horyzontów oraz dostępnych zasobów obliczeniowych.
+
+
+### 6.3 Wpływ self-attention i cross-attention na jakość prognozy
+
+Z perspektywy uzyskanych wyników modele wykorzystujące self-attention okazały się ogólnie bardziej konkurencyjne i stabilne niż architektury oparte wyłącznie na cross-attention. PatchTST oraz iTransformer częściej osiągały lepsze miejsca w rankingach błędu, co wskazuje, że self-attention zapewnia przewagę przekrojową, niezależnie od domeny i długości horyzontu. W szczególności iTransformer potwierdził, że self-attention może być skuteczne także w nietypowej formie – skupionej na relacjach między zmiennymi – i dzięki temu dobrze radzi sobie w zadaniach wielowymiarowych, gdzie istotna jest koordynacja wielu kanałów.
+
+Model CATS, oparty wyłącznie na cross-attention, był w stanie dorównywać modelom z self-attention, a w części przypadków je przewyższać, co pokazuje, że cross-attention może być wystarczające do uzyskania dobrej jakości prognozy. Jednocześnie jego wyniki były bardziej zróżnicowane i silniej zależne od charakteru danych, co sugeruje mniejszą odporność na zmianę domeny. Podsumowując, self-attention dawało bardziej konsekwentną poprawę jakości prognoz, natomiast cross-attention zapewniało porównywalną skuteczność tylko w wybranych ustawieniach, kosztem większej zmienności wyników.
+
+## 6. Wnioski
+
+Przeprowadzone eksperymenty pokazują, że mechanizm attention nie jest warunkiem koniecznym do uzyskania wysokiej jakości prognoz w długoterminowym prognozowaniu szeregów czasowych. W wielu przypadkach proste modele liniowe, takie jak AutoARIMA i DLinear, osiągały wyniki porównywalne z modelami opartymi na Transformerach, a sporadycznie nawet je przewyższały, co wskazuje, że istotna część struktury badanych szeregów może być skutecznie opisana przez relacje liniowe oraz dekompozycję trendowo-sezonową. Tym samym wyniki te potwierdzają obserwacje z literatury, że wzrost złożoności architektury nie gwarantuje automatycznej poprawy jakości prognozy.
+
+Analiza modeli wykorzystujących self-attention (PatchTST, iTransformer) pokazuje, że mechanizm ten często zapewnia bardziej stabilną i powtarzalną poprawę jakości prognoz w ujęciu przekrojowym, szczególnie w danych wielowymiarowych oraz przy dłuższych horyzontach. Oznacza to, że attention może pełnić rolę skutecznego wzmacniacza modelu, o ile jest wsparty odpowiednim biasem architektonicznym, takim jak patching, dekompozycja wymiarów czy ograniczenie przestrzeni uwagi. Z kolei model oparty wyłącznie na cross-attention (CATS) dowodzi, że usunięcie self-attention nie prowadzi do jednoznacznego pogorszenia wyników, jednak skuteczność takiego podejścia jest bardziej zależna od charakteru danych i mniej stabilna pomiędzy domenami.
