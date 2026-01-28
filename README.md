@@ -3,6 +3,8 @@
 This repository contains code and experiments for the project **"Time-series Forecasting: Are (Cross-)Attentions Necessary?"**.  
 The goal of this project is to investigate the role of attention mechanisms, including cross-attention, in forecasting time-series data.
 
+## The report is in the file [report.MD](report.MD).
+
 ## Getting Started
 1. Clone the repository:  
    ```bash

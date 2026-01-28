@@ -1,5 +1,5 @@
 # Time-series Forecasting: Are (Cross-)Attentions Necessary?
-
+## Autorzy: Szymon Twardosz, Adrian Mrzygłód, Piotr Sobczyński
 ## 1. Wstęp
 W prognozowaniu szeregów czasowych coraz częściej stosuje się modele oparte na mechanizmie attention, w szczególności architektury Transformer. Jednocześnie wyniki ostatnich prac pokazują, że proste modele liniowe mogą osiągać porównywalne lub lepsze rezultaty niż modele wykorzystujące self-attention.
 
